@@ -1,0 +1,687 @@
+/* ==========================================================================
+   TRACKSCAN — design tokens
+   ========================================================================== */
+
+:root {
+  /* Color: near-black steel surfaces + railway signal-light semantics */
+  --bg-void: #14171a;
+  --bg-panel: #1b1f23;
+  --bg-panel-raised: #232830;
+  --rail-steel: #3a424b;
+  --rail-steel-soft: #2a2f36;
+
+  --signal-amber: #e8a33d;
+  --signal-amber-dim: #6b5326;
+  --signal-red: #d6484a;
+  --signal-red-dim: #4a2426;
+  --signal-green: #5fb37c;
+  --signal-green-dim: #253f30;
+
+  --text-primary: #edebe6;
+  --text-secondary: #8b939c;
+  --text-faint: #565d66;
+
+  /* Type */
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Consolas, monospace;
+
+  /* Layout */
+  --content-width: 520px;
+  --content-width-desktop: 1040px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --action-bar-height: 76px;
+
+  /* Elevation */
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 24px -12px rgba(0, 0, 0, 0.55);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Reset & base
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+button, input, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal-amber);
+  outline-offset: 2px;
+}
+
+/* Several components below set their own `display` (flex, for layout)
+   directly on the class. A plain `[hidden] { display: none }` from the
+   browser's default stylesheet is normal-priority, so it loses to any
+   author rule at equal specificity — meaning `el.hidden = true` silently
+   stops working the moment a component also declares `display`. Forcing
+   it here guarantees the hidden attribute always wins, everywhere. */
+[hidden] {
+  display: none !important;
+}
+
+/* ==========================================================================
+   App shell
+   ========================================================================== */
+
+.app-shell {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding-bottom: calc(var(--action-bar-height) + 16px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Top bar
+   ========================================================================== */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 38px 1fr 38px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(20, 23, 26, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--rail-steel-soft);
+}
+
+.topbar__spacer {
+  width: 38px;
+}
+
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.topbar__text {
+  text-align: center;
+}
+
+.topbar__mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--signal-amber);
+  box-shadow: 0 0 0 3px var(--signal-amber-dim);
+  flex: none;
+}
+
+.topbar__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+}
+
+.topbar__subtitle {
+  margin: 1px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.icon-btn {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--rail-steel-soft);
+  color: var(--text-secondary);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+
+.icon-btn[aria-expanded="true"] {
+  color: var(--signal-amber);
+  border-color: var(--signal-amber-dim);
+}
+
+/* ==========================================================================
+   Settings panel
+   ========================================================================== */
+
+.settings-panel {
+  padding: 14px 16px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--rail-steel-soft);
+}
+
+.settings-panel__label {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+.field__label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.field__value {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.field input[type="range"] {
+  accent-color: var(--signal-amber);
+}
+
+.field input[type="number"],
+.field select {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--rail-steel);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+   Main content
+   ========================================================================== */
+
+.main {
+  flex: 1;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.layout-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scan-column,
+.results-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Error banner */
+
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--signal-red-dim);
+  border: 1px solid var(--signal-red);
+  border-radius: var(--radius-sm);
+  color: #f3c9ca;
+  font-size: 13.5px;
+}
+
+.error-banner svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--signal-red);
+}
+
+/* ==========================================================================
+   Dropzone / preview
+   ========================================================================== */
+
+.dropzone {
+  position: relative;
+  border: 1.5px dashed var(--rail-steel);
+  border-radius: var(--radius-md);
+  background: var(--bg-panel);
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-panel);
+  transition: border-color 0.18s var(--ease-out), background 0.18s var(--ease-out);
+}
+
+.dropzone:hover,
+.dropzone:focus-visible {
+  border-color: var(--signal-amber);
+}
+
+.dropzone.is-dragover {
+  border-color: var(--signal-amber);
+  background: var(--bg-panel-raised);
+}
+
+.dropzone__empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 32px 20px;
+}
+
+.dropzone__empty svg {
+  margin: 0 auto 12px;
+  color: var(--text-faint);
+}
+
+.dropzone__title {
+  margin: 0 0 4px;
+  font-size: 14.5px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dropzone__hint {
+  margin: 0;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+}
+
+.preview-wrap {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.preview-wrap img {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  background: #000;
+}
+
+.preview-filename {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  max-width: calc(100% - 20px);
+  padding: 4px 9px;
+  background: rgba(20, 23, 26, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Signature element: ultrasonic-style scan line, swept during inference */
+
+.scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--signal-amber) 20%, var(--signal-amber) 80%, transparent);
+  box-shadow: 0 0 14px 2px rgba(232, 163, 61, 0.7);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preview-wrap.is-scanning .scanline {
+  opacity: 1;
+  animation: scan-sweep 1.6s ease-in-out infinite;
+}
+
+.preview-wrap.is-scanning::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 23, 26, 0.18);
+  pointer-events: none;
+}
+
+@keyframes scan-sweep {
+  0%   { top: 0%; }
+  50%  { top: calc(100% - 3px); }
+  100% { top: 0%; }
+}
+
+/* ==========================================================================
+   Status band
+   ========================================================================== */
+
+.status-band {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--rail-steel-soft);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow-panel);
+  animation: rise-in 0.3s var(--ease-out);
+}
+
+.results-placeholder {
+  margin: 0;
+  padding: 28px 16px;
+  border: 1.5px dashed var(--rail-steel-soft);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.status-band__icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-band__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.03em;
+}
+
+.status-band__subtitle {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.status-band--defect {
+  border-color: var(--signal-red);
+  background: var(--signal-red-dim);
+}
+.status-band--defect .status-band__icon {
+  background: rgba(214, 72, 74, 0.18);
+  color: var(--signal-red);
+}
+
+.status-band--clear {
+  border-color: var(--signal-green);
+  background: var(--signal-green-dim);
+}
+.status-band--clear .status-band__icon {
+  background: rgba(95, 179, 124, 0.18);
+  color: var(--signal-green);
+}
+
+.status-band--scanning .status-band__icon {
+  background: rgba(232, 163, 61, 0.18);
+  color: var(--signal-amber);
+}
+
+/* ==========================================================================
+   Detections list
+   ========================================================================== */
+
+.detections {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detection-item {
+  padding: 12px 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rail-steel-soft);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-panel);
+  animation: rise-in 0.3s var(--ease-out) both;
+}
+
+.detection-item__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.detection-item__class {
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.detection-item__conf {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--signal-amber);
+}
+
+.confidence-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rail-steel-soft);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: var(--signal-amber);
+  border-radius: 2px;
+}
+
+.detection-item__bbox {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Action bar (thumb reach)
+   ========================================================================== */
+
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(20, 23, 26, 0.94);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid var(--rail-steel-soft);
+}
+
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: transform 0.1s var(--ease-out), opacity 0.15s var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--primary {
+  flex: 2;
+  background: var(--signal-amber);
+  color: #211705;
+}
+
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--rail-steel);
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.app-footer {
+  margin-top: auto;
+  padding: 18px 16px 22px;
+  text-align: center;
+  border-top: 1px solid var(--rail-steel-soft);
+}
+
+.app-footer p {
+  margin: 0;
+  color: var(--text-faint);
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Small tablets: keep single column but frame it like a card */
+@media (min-width: 560px) and (max-width: 899px) {
+  .app-shell {
+    border-left: 1px solid var(--rail-steel-soft);
+    border-right: 1px solid var(--rail-steel-soft);
+  }
+}
+
+/* Desktop / laptop: real two-column layout, action bar rejoins normal flow */
+@media (min-width: 900px) {
+  .app-shell {
+    max-width: var(--content-width-desktop);
+    padding-bottom: 0;
+    border-left: 1px solid var(--rail-steel-soft);
+    border-right: 1px solid var(--rail-steel-soft);
+  }
+
+  .topbar,
+  .settings-panel,
+  .main {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .layout-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: start;
+    gap: 28px;
+  }
+
+  .preview-wrap img {
+    max-height: 70vh;
+  }
+
+  .action-bar {
+    position: static;
+    max-width: 460px;
+    margin: 6px auto 0;
+    padding: 18px 32px 6px;
+    background: transparent;
+    backdrop-filter: none;
+    border-top: none;
+  }
+
+  .app-footer {
+    padding-top: 20px;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline,
+  .status-band,
+  .detection-item,
+  .btn {
+    animation: none !important;
+    transition: none !important;
+  }
+  .preview-wrap.is-scanning .scanline {
+    opacity: 1;
+    top: 50%;
+  }
+}

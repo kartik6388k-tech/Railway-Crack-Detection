@@ -1,0 +1,13 @@
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 1
+names: ['railway-gap']
+
+roboflow:
+  workspace: 23f3001829s-workspace
+  project: railway-crack-detection-ezd8g-hojvc
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/23f3001829s-workspace/railway-crack-detection-ezd8g-hojvc/dataset/1
