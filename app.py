@@ -36,7 +36,11 @@ app = Flask(__name__)
 
 # Paths
 UPLOAD_FOLDER = Path("static/uploads")
-RESULTS_FOLDER = Path("results")
+# Runtime scan outputs live under static/, separate from the top-level
+# results/ folder (which holds training curves, confusion matrix, etc.
+# promoted from the training run). Same physical separation as uploads/ —
+# the public URL stays /results/<filename>, only the folder on disk moved.
+RESULTS_FOLDER = Path("static/results")
 MODELS_FOLDER = Path("runs/detect")
 
 # Create directories
