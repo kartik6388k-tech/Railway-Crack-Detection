@@ -27,7 +27,7 @@ except ImportError as exc:
 
 
 DEFAULT_WEIGHTS = Path(
-    r"E:\rail-wheel-crack-detection\runs\detect\runs\yolov8n_960_yolov8n_960-2\weights\best.pt"
+    r"E:\rail-wheel-crack-detection\pretrained weights\best.pt"
 )
 DEFAULT_OUTPUT_DIR = Path("results")
 DEFAULT_CONFIDENCE = 0.10
