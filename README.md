@@ -27,10 +27,10 @@ YOLOv8-based detection of rail surface defects (cracks and gaps) from photograph
 ---
 ## STEPS
 
-->befoure starting the traning put the data in dataset folder in the yolov8 format with matching labels of of image in two seprate folder for each 
-->create a runs folder here all the weights and results will be stored 
-->use "trainer.py --help" to get to know about the args
-->use the detect to detect the gap locally or use the app.py file for the online use by enabling it on your local machine u could access the website on the dedicated link 
+- >befoure starting the traning put the data in dataset folder in the yolov8 format with matching labels of of image in two seprate folder for each 
+- >create a runs folder here all the weights and results will be stored 
+- >use "trainer.py --help" to get to know about the args
+- >use the detect to detect the gap locally or use the app.py file for the online use by enabling it on your local machine u could access the website on the dedicated link 
 
 ---
 
