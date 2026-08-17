@@ -25,6 +25,14 @@ YOLOv8-based detection of rail surface defects (cracks and gaps) from photograph
 | Frontend | Vanilla HTML / CSS / JS (no framework) |
 
 ---
+## STEPS
+
+->befoure starting the traning put the data in dataset folder in the yolov8 format with matching labels of of image in two seprate folder for each 
+->create a runs folder here all the weights and results will be stored 
+->use "trainer.py --help" to get to know about the args
+->use the detect to detect the gap locally or use the app.py file for the online use by enabling it on your local machine u could access the website on the dedicated link 
+
+---
 
 ## Project structure
 
@@ -222,6 +230,6 @@ More validation batches: [`val_batch1_labels.jpg`](results/val_batch1_labels.jpg
 - Dataset: [Railway Crack Detection](https://universe.roboflow.com/23f3001829s-workspace/railway-crack-detection-ezd8g-hojvc) on Roboflow Universe
 - [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics)
 
-## Author
+## Description
 
-Built by **Kartik Kushwaha**, a third-year engineering student, as an applied deep learning project in railway infrastructure inspection.
+Training was performed on a local machine equipped with an **11th-generation Intel Core i7 processor, NVIDIA RTX 3050 GPU, and 32 GB RAM**. The model was trained for **150 epochs**, and the complete training process took approximately **3.5 hours** on this system.
