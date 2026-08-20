@@ -233,3 +233,7 @@ More validation batches: [`val_batch1_labels.jpg`](results/val_batch1_labels.jpg
 ## Description
 
 Training was performed on a local machine equipped with an **11th-generation Intel Core i7 processor, NVIDIA RTX 3050 GPU, and 32 GB RAM**. The model was trained for **150 epochs**, and the complete training process took approximately **3.5 hours** on this system.
+
+## Limitation
+
+As we know that in railway track there are few gaps which are intentionally left for the free thermal expansion during the elevated temperature of the surrounding environment causing the metal to expand (gap between railway track is about 3-10 mm, https://railroadrails.com/information/why-gaps-are-left-in-railway-tracks/) these gaps are connected using a fish plate have 4 anchoring point 2 for holding each rail .The model here detects it also as a crack if anyone is willing to correct the issue you could use a cap in the model where if the gap is between the 3-10 mm means that is intentional gap given for thermal expansion not a crack.
