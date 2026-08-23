@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 from datetime import datetime
 import traceback
+import os
 
 from flask import Flask, request, jsonify, send_file
 from werkzeug.utils import secure_filename
@@ -71,7 +72,12 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 
 MODEL = None
-WEIGHTS_PATH = DEFAULT_WEIGHTS
+
+# Deployment-safe YOLO weights path.
+# Override with YOLO_WEIGHTS if the model is stored elsewhere.
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_RENDER_WEIGHTS = BASE_DIR / "pretrained weights" / "best.pt"
+WEIGHTS_PATH = Path(os.environ.get("YOLO_WEIGHTS", str(DEFAULT_RENDER_WEIGHTS)))
 
 
 def load_global_model():
@@ -81,8 +87,27 @@ def load_global_model():
         return MODEL
 
     try:
-        logger.info(f"Loading YOLO model from: {WEIGHTS_PATH}")
-        MODEL = load_model(WEIGHTS_PATH)
+        WEIGHTS_PATH_RESOLVED = Path(WEIGHTS_PATH).resolve()
+
+        logger.info(f"Loading YOLO model from: {WEIGHTS_PATH_RESOLVED}")
+
+
+        if not WEIGHTS_PATH_RESOLVED.is_file():
+
+            raise FileNotFoundError(
+
+                f"YOLO weights not found at '{WEIGHTS_PATH_RESOLVED}'. "
+
+                "Make sure best.pt is committed to the repository under "
+
+                "'pretrained weights/best.pt', or set the YOLO_WEIGHTS "
+
+                "environment variable to a valid path."
+
+            )
+
+
+        MODEL = load_model(WEIGHTS_PATH_RESOLVED)
         logger.info(f"Model loaded successfully. Classes: {MODEL.names}")
         return MODEL
     except Exception as exc:
@@ -372,11 +397,11 @@ if __name__ == "__main__":
     except Exception as exc:
         logger.error(f"Failed to pre-load model: {exc}")
 
-    # Run Flask app
+    # Run Flask app locally. On Render, use: gunicorn app:app
     app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True,
-        use_reloader=False,  # Disable auto-reload to avoid loading model twice
-        threaded=True,       # Don't let one in-flight /api/predict block other requests
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        debug=False,
+        use_reloader=False,
+        threaded=True,
     )
