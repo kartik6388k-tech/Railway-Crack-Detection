@@ -36,13 +36,16 @@ from detect import (
 app = Flask(__name__)
 
 # Paths
-UPLOAD_FOLDER = Path("static/uploads")
+BASE_DIR = Path(__file__).resolve().parent
+UPLOAD_FOLDER = BASE_DIR / "static" / "uploads"
+
 # Runtime scan outputs live under static/, separate from the top-level
 # results/ folder (which holds training curves, confusion matrix, etc.
 # promoted from the training run). Same physical separation as uploads/ —
 # the public URL stays /results/<filename>, only the folder on disk moved.
-RESULTS_FOLDER = Path("static/results")
-MODELS_FOLDER = Path("runs/detect")
+RESULTS_FOLDER = BASE_DIR / "static" / "results"
+MODELS_FOLDER = BASE_DIR / "runs" / "detect"
+TEMPLATES_FOLDER = BASE_DIR / "templates"
 
 # Create directories
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -75,9 +78,10 @@ MODEL = None
 
 # Deployment-safe YOLO weights path.
 # Override with YOLO_WEIGHTS if the model is stored elsewhere.
-BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_RENDER_WEIGHTS = BASE_DIR / "pretrained weights" / "best.pt"
-WEIGHTS_PATH = Path(os.environ.get("YOLO_WEIGHTS", str(DEFAULT_RENDER_WEIGHTS)))
+WEIGHTS_PATH = Path(
+    os.environ.get("YOLO_WEIGHTS", str(DEFAULT_RENDER_WEIGHTS))
+)
 
 
 def load_global_model():
@@ -166,26 +170,19 @@ def save_uploaded_file(file) -> Path | None:
 @app.route("/", methods=["GET"])
 def index():
     """Serve the main HTML page."""
-    return send_file("templates/index.html", mimetype="text/html")
+    return send_file(TEMPLATES_FOLDER / "index.html", mimetype="text/html")
 
 
 @app.route("/health", methods=["GET"])
 def health():
-    """Health check endpoint."""
-    try:
-        model_loaded = MODEL is not None
-        return jsonify(
-            {
-                "status": "ok",
-                "model_loaded": model_loaded,
-                "timestamp": datetime.now().isoformat(),
-            }
-        )
-    except Exception as exc:
-        logger.error(f"Health check failed: {exc}")
-        return jsonify({"status": "error", "message": str(exc)}), 500
-
-
+    """Lightweight health check for Render."""
+    return jsonify(
+        {
+            "status": "ok",
+            "model_loaded": MODEL is not None,
+            "timestamp": datetime.now().isoformat(),
+        }
+    ), 200
 @app.route("/api/predict", methods=["POST"])
 def predict():
     """
@@ -379,25 +376,16 @@ def handle_internal_error(e):
 # ============================================================================
 
 
-@app.before_request
-def startup():
-    """Load model on first request."""
-    if MODEL is None:
-        try:
-            load_global_model()
-        except Exception as exc:
-            logger.error(f"Failed to initialize model: {exc}")
-
-
 if __name__ == "__main__":
-    # Load model at startup
+    # Local development only.
+    # Render should use:
+    # gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
     try:
         load_global_model()
         logger.info("Model pre-loaded successfully.")
     except Exception as exc:
         logger.error(f"Failed to pre-load model: {exc}")
 
-    # Run Flask app locally. On Render, use: gunicorn app:app
     app.run(
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 5000)),
